@@ -67,7 +67,7 @@ assign cout=c[32];
 
 //overflow detection
 //signed 
-assign over_flow[0]=(cout ^ sum[31]) ;
+	assign over_flow[0]=(cout ^ c[31]) ;
 
 /*Two negative numbers are added and an answer comes positive or 
 Two positive numbers are added and an answer comes as negative. */
