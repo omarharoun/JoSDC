@@ -6,7 +6,7 @@ Function: generate control units to specify data element functionality and data 
 */
 //////////////////////////////////////////////////////////////////////////////////////////
 
-module control_unit(clk,ir,regdest,alusrc,aluop,branch,memread,memwrite,regwrite,memtoreg);
+module control_unit(clk,ir,regdest,alusrc,branch,memread,memwrite,regwrite,memtoreg);
 
 
 //####################### Scalers Ports ###############################################//
@@ -14,7 +14,6 @@ output reg alusrc,regdest,memread,memwrite,regwrite,memtoreg;
 input clk;
 
 //####################### Vector Ports ###############################################//
-output reg[3:0]aluop;
 input  [5:0]ir;
 output reg[3:0]branch;
 
@@ -44,17 +43,6 @@ memtoreg: 1>> return value to a destination register from the data memory
 branch:   branch select from pc_plus4 if not branch instruction
 			 branch_dir if the branch target (displacemen instructions) -from immediate- j and jal
 			 branch_ind if the target is indirect (pc=return_register $31) -jr and jalr
-aluop:    this control signals are used to diffrentiate between rfmt and other i and j formates usage
-			 of the control unit in addition it will help in [5:0] funct field encoding.
-			 0000 > rfmt
-			 0001 > addi //add
-			 0010 > bge, //sub
-			 0011 > andi
-			 0100 > ori
-			 0101 > xori
-			 0110 > slti
-			 0111 > load/store
-			 1000 > flpt
 			 		 
 */
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -77,19 +65,17 @@ always @(posedge clk) begin:con_cr
 				regwrite=1'b1;
 				memtoreg=1'b0;
 				branch=pc_plus4;
-				aluop=4'b0000;
 				regdest=1'b1;
 				end
 		
-		j:		begin
+/*		j:		begin
 				alusrc=1'b1;
 				memread=1'b0;
 				memwrite=1'b0;
 				regwrite=1'b0;
 				memtoreg=1'b0;
 				branch=branch_j;
-				aluop=4'b0000;
-				regdest=1'bx;
+				regdest=1'b0;
 				
 				end
 				
@@ -100,8 +86,7 @@ always @(posedge clk) begin:con_cr
 				regwrite=1'b0;
 				memtoreg=1'b0;
 				branch=branch_jr;
-				aluop=4'b0000;
-				regdest=1'bx;
+				regdest=1'b0;
 				
 				end
 		jal: begin
@@ -111,8 +96,7 @@ always @(posedge clk) begin:con_cr
 				regwrite=1'b0;
 				memtoreg=1'b0;
 				branch=branch_jal;
-				aluop=4'b0000;
-				regdest=1'bx;
+				regdest=1'b0;
 				
 				end
 		
@@ -123,8 +107,7 @@ always @(posedge clk) begin:con_cr
 				regwrite=1'b0;
 				memtoreg=1'b0;
 				branch=branch_bge;
-				aluop=4'b0010;
-				regdest=1'bx;
+				regdest=1'b0;
 				
 				end
 		blt:  begin
@@ -134,8 +117,7 @@ always @(posedge clk) begin:con_cr
 				regwrite=1'b0;
 				memtoreg=1'b0;
 				branch=branch_blt;
-				aluop=4'b0010;
-				regdest=1'bx;
+				regdest=1'b0;
 				
 				end
 		
@@ -146,8 +128,7 @@ always @(posedge clk) begin:con_cr
 				regwrite=1'b0;
 				memtoreg=1'b0;
 				branch=branch_beq;
-				aluop=4'b0010;
-				regdest=1'bx;
+				regdest=1'b0;
 				
 				end
 		bne:  begin
@@ -157,8 +138,7 @@ always @(posedge clk) begin:con_cr
 				regwrite=1'b0;
 				memtoreg=1'b0;
 				branch=branch_bne;
-				aluop=4'b0010;
-				regdest=1'bx;
+				regdest=1'b0;
 				
 				end
 		
@@ -169,8 +149,7 @@ always @(posedge clk) begin:con_cr
 				regwrite=1'b0;
 				memtoreg=1'b0;
 				branch=branch_bgt;
-				aluop=4'b0010;
-				regdest=1'bx;
+				regdest=1'b0;
 				
 				end
 		ble:  begin
@@ -180,10 +159,11 @@ always @(posedge clk) begin:con_cr
 				regwrite=1'b0;
 				memtoreg=1'b0;
 				branch=branch_ble;
-				aluop=4'b0010;
-				regdest=1'bx;
+				regdest=1'b0;
 				
 				end
+*/
+				
 		andi: begin
 				alusrc=1'b1;
 				memread=1'b0;
@@ -191,7 +171,6 @@ always @(posedge clk) begin:con_cr
 				regwrite=1'b1;
 				memtoreg=1'b0;
 				branch=pc_plus4;
-				aluop=4'b0011;
 				regdest=1'b0;
 				
 				end
@@ -202,7 +181,6 @@ always @(posedge clk) begin:con_cr
 				regwrite=1'b1;
 				memtoreg=1'b0;
 				branch=pc_plus4;
-				aluop=4'b0100;
 				regdest=1'b0;
 				
 				end
@@ -213,7 +191,6 @@ always @(posedge clk) begin:con_cr
 				regwrite=1'b1;
 				memtoreg=1'b0;
 				branch=pc_plus4;
-				aluop=4'b0101;
 				regdest=1'b0;
 				
 				end
@@ -224,7 +201,6 @@ always @(posedge clk) begin:con_cr
 				regwrite=1'b1;
 				memtoreg=1'b0;
 				branch=pc_plus4;
-				aluop=4'b0001;
 				regdest=1'b0;
 				
 				end
@@ -236,7 +212,6 @@ always @(posedge clk) begin:con_cr
 				regwrite=1'b1;
 				memtoreg=1'b1;
 				branch=pc_plus4;
-				aluop=4'b0001;
 				regdest=1'b0;
 				
 				end
@@ -244,11 +219,10 @@ always @(posedge clk) begin:con_cr
 				alusrc=1'b1;
 				memread=1'b0;
 				memwrite=1'b1;
-				regwrite=1'b1;
-				memtoreg=1'b1;
+				regwrite=1'b0;
+				memtoreg=1'b0;
 				branch=pc_plus4;
-				aluop=4'b0001;
-				regdest=1'bx;
+				regdest=1'b0;
 				
 				end
 				
@@ -289,11 +263,10 @@ endmodule
 module control_dut;
 
 //####################### Scalers Ports ###############################################//
-wire alusrc,memread,memwrite,regwrite,memtoreg;
+wire regdest,alusrc,memread,memwrite,regwrite,memtoreg;
 reg clk;
 
 //####################### Vector Ports ###############################################//
-wire [3:0]aluop;
 reg  [5:0]ir;
 wire [3:0]branch;
 
@@ -317,7 +290,7 @@ parameter pc_plus4=4'b0000,branch_j=4'b0001,branch_jr=4'b0010,branch_beq=4'b0011
 	
 
 /////////////////////////////////circuit under test/////////////////////////////////
-control_unit dut(clk,ir,alusrc,aluop,branch,memread,memwrite,regwrite,memtoreg);
+control_unit dut(clk,ir,regdest,alusrc,branch,memread,memwrite,regwrite,memtoreg);
 
 ////////////////////////////////////////////////////////////////////////////////////
 
@@ -325,46 +298,46 @@ control_unit dut(clk,ir,alusrc,aluop,branch,memread,memwrite,regwrite,memtoreg);
 
 	initial begin : test_vectors
 			
-			ir=rfmt;
-			#40
+			#30 ir=rfmt;
+/*			#60
 			ir=j;
-			#40
+			#60
 			ir=jr;
-			#40
+			#60
 			ir=jal;
-			#40
+			#60
 			ir=beq;
-			#40
+			#60
 			ir=bne;
-			#40
+			#60
 			ir=bge;
-			#40
+			#60
 			ir=blt;
-			#40
+			#60
 			ir=bgt;
-			#40
-			ir=ble;
-			#40
+			#60
+			ir=ble;*/
+			#60
 			ir=addi;
-			#40
+			#60
 			ir=andi;
-			#40
+			#60
 			ir=ori;
-			#40
+			#60
 			ir=xori;
-			#40
+			#60
 			ir=lw;
-			#40
+			#60
 			ir=sw;
-			#40;
+			#60;
 			
 	end
 	
 	
 	initial begin : clk_generation
 		clk=0;
-		forever
-		#30 clk=~clk;
+		
+		forever #30 clk=~clk;
 	
 	end
 	

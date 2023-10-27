@@ -28,30 +28,6 @@ end
 
 endmodule
 
-module pc_dut;
-	//registers to put test values to
-	reg [31:0]d;
-	reg clk;
-	//wires to prob outputs from
-	wire [31:0]q;
-	
-	//ciruit under test
-	pc pc_ut(.clk(clk),.d(d),.q(q));
-	///////////////////
-	
-	initial begin : test_vectors
-		d=32'b0;
-		#20 d=32'd20;
-		#40 d=32'd10;
-	end
-	
-	initial begin : clk_generation
-		clk=0;
-		forever
-		#10 clk=~clk;
-	
-	end
-	
-endmodule 
+
 
 
