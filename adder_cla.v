@@ -67,7 +67,8 @@ assign cout=c[32];
 
 //overflow detection
 //signed 
-assign over_flow[0]=(cout ^ sum[31]) ;
+assign over_flow[0]=(in1[31] == in2[31]) && (in1[31] != sum[31]);
+ 
 
 /*Two negative numbers are added and an answer comes positive or 
 Two positive numbers are added and an answer comes as negative. */
@@ -78,6 +79,12 @@ assign over_flow[1]=cin ^ cout; //AT addition CI=0 if overflow if the result big
 //ov decision
 assign ov=(s&over_flow[0]) | (~s&over_flow[1]);
 
+/*
+        1111
+		  1110
+		  11101
+
+*/
 
 
 
