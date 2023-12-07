@@ -5,31 +5,25 @@ Date    : 10/20/2023
 
 */ 
 
-module Imm_ReadData2_Mux (Clk , ReadData2_Imm_Output, ALUSrc , Read_Data2 , Imm_SignExtended_32Bits) ;
+module Imm_ReadData2_Mux (ReadData2_Imm_Output, ALUSrc , Read_Data2 , Imm_SignExtended_32Bits) ;
 
   // Scalers 
   
-    input ALUSrc ,Clk ; 
+    input ALUSrc  ; 
   
   // Vectors 
   
    input      [31:0] Read_Data2 , Imm_SignExtended_32Bits ; 
 	
-	output reg [31:0] ReadData2_Imm_Output ;
+	output  [31:0] ReadData2_Imm_Output ;
 	
   /***********************************/
   
-  // Select either 'Readdata2' from the register file or the sign-extended immediate value as the second input for the ALU. 
- 
-  always@(posedge Clk) begin 
-   
-    if(!ALUSrc) ReadData2_Imm_Output <= Read_Data2       ; // if ALUSrc = 0  --> Output = Read_Data2
-	 
-	 else ReadData2_Imm_Output <= Imm_SignExtended_32Bits ; // if ALUSrc = 1  --> Output = Imm_SignExtended_32Bits 
-  
+  // Select either 'Readdata2' from the register file or the sign-extended immediate value as the second input for the ALU.
+    // if ALUSrc = 0  --> Output = Read_Data2
+	 // if ALUSrc = 1  --> Output = Imm_SignExtended_32Bits 
 
-  end  
-	
+      assign ReadData2_Imm_Output =   (!ALUSrc) ? Read_Data2 : Imm_SignExtended_32Bits ;  
 	
 endmodule
 
@@ -39,7 +33,7 @@ module Imm_ReadData2_Mux_testbench();
 
   // Reg for Test Values
   
-    reg        Clk        , ALUSrc                  ;
+    reg        ALUSrc                                ;
 	 reg [31:0] Read_Data2 , Imm_SignExtended_32Bits  ; 
 	 
   // Define the output Wires.
@@ -48,7 +42,7 @@ module Imm_ReadData2_Mux_testbench();
 
   // Device Under Test .
 
-    Imm_ReadData2_Mux DUT (Clk , ReadData2_Imm_Output, ALUSrc , Read_Data2 , Imm_SignExtended_32Bits) ;
+    Imm_ReadData2_Mux DUT (ReadData2_Imm_Output, ALUSrc , Read_Data2 , Imm_SignExtended_32Bits) ;
 	 
   /*************************/
   
@@ -71,15 +65,7 @@ module Imm_ReadData2_Mux_testbench();
 		#40 ;
 	 
 	 end
-
-  // ClK Genetration 	 
-    initial begin 
-	
-      Clk = 0 ;
-			
-		forever #20 Clk = ~Clk ; 
-			
-	 end 
+ 
   
 endmodule 
 
